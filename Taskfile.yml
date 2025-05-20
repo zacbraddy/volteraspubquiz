@@ -1,0 +1,59 @@
+version: '3'
+
+includes:
+  server:
+    taskfile: ./apps/server
+    dir: ./apps/server
+  client:
+    taskfile: ./apps/client
+    dir: ./apps/client
+
+output: prefixed
+
+tasks:
+  bootstrap:
+    cmds:
+      - task: server:bootstrap
+      - task: client:bootstrap
+
+  dev:
+    deps:
+      - dev-server
+      - dev-client
+    method: none
+
+  dev-server:
+    cmds:
+      - task: server:dev
+    watch: true
+    sources:
+      - './apps/server/**/*.*'
+    internal: true
+    method: none
+
+  dev-client:
+    cmds:
+      - task: client:dev
+    watch: true
+    sources:
+      - "./apps/client/**/*.*"
+    internal: true
+    method: none
+
+  lint:
+    deps:
+      - lint-server
+      - lint-client
+    method: none
+
+  lint-server:
+    cmds:
+      - task: server:lint
+    internal: true
+    method: none
+
+  lint-client:
+    cmds:
+      - task: client:lint
+    internal: true
+    method: none

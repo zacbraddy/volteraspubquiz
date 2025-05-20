@@ -1,0 +1,21 @@
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  bootstrap:
+    cmds:
+      - poetry env use python3.11
+      - pip install --upgrade pip setuptools wheel
+      - poetry install
+
+  dev:
+    cmds:
+      - fastapi dev src/main.py
+
+  lint:
+    cmds:
+      - isort ./**/*.py
+      - black ./**/*.py
+      - flake8 ./**/*.py
