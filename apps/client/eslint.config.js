@@ -15,6 +15,7 @@ import vitest from "@vitest/eslint-plugin";
 import a11y from "eslint-plugin-jsx-a11y";
 import testingLibrary from "eslint-plugin-testing-library";
 import react from "eslint-plugin-react";
+import pluginQuery from '@tanstack/eslint-plugin-query'
 
 const compat = new FlatCompat();
 
@@ -174,6 +175,7 @@ export default tseslint.config(
     files: ["**/*{.ts,.tsx}"],
     plugins: { react },
   },
+  ...pluginQuery.configs['flat/recommended'],
   {
     languageOptions: {
       parserOptions: {
