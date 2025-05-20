@@ -8,9 +8,6 @@ from vehicle_data.controllers.vehicle_data import vehicle_data_controller
 
 load_dotenv()
 
-# accessing and printing value
-print(os.getenv("MY_KEY"))
-
 app = FastAPI(root_path="/api/v1")
 
 allowed_origins = []
