@@ -12,10 +12,14 @@ tasks:
 
   dev:
     cmds:
-      - fastapi dev src/main.py
+      - PYTHONPATH=$PYTHONPATH:$(pwd)/src fastapi dev src/main.py
 
   lint:
     cmds:
       - isort ./**/*.py
       - black ./**/*.py
       - flake8 ./**/*.py
+
+  test:
+    cmds:
+      - PYTHONPATH=$PYTHONPATH:$(pwd)/src pytest tests/ -v

@@ -57,3 +57,14 @@ tasks:
       - task: client:lint
     internal: true
     method: none
+
+  test:
+    deps:
+      - test-server
+    method: none
+
+  test-server:
+    cmds:
+      - task: server:test
+    internal: true
+    method: none

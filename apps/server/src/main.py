@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 
-app = FastAPI()
+from vehicle_data.controllers.vehicle_data import vehicle_data_controller
 
+app = FastAPI(root_path="/api/v1")
 
-@app.get("/")
-def index():
-    return "Hello World"
+app.mount("/vehicle_data", vehicle_data_controller)

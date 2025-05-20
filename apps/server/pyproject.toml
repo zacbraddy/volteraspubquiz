@@ -9,7 +9,11 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "fastapi (>=0.115.12,<0.116.0)",
-    "fastapi-cli (>=0.0.7,<0.0.8)"
+    "fastapi-cli (>=0.0.7,<0.0.8)",
+    "faker (>=37.3.0,<38.0.0)",
+    "pydantic (>=2.11.4,<3.0.0)",
+    "pendulum (>=3.1.0,<4.0.0)",
+    "pydantic-extra-types (>=2.10.4,<3.0.0)"
 ]
 virtualenvs.in-project = true
 
@@ -22,6 +26,7 @@ package-mode = false
 black = "^25.1.0"
 isort = "^6.0.1"
 flake8 = "^7.2.0"
+pytest = "^8.3.5"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
