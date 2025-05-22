@@ -1,23 +1,11 @@
-from uuid import uuid4
-
-from faker import Faker
-
-from vehicle_data.domain.vehicle import Vehicle
+from vehicle_data.repositories.vehicle_repository import VehicleRepository
 
 
 def get_vehicles():
-    fake = Faker()
+    repository = VehicleRepository.initialize()
+    return repository.get_all_vehicles()
 
-    new_vehicles = []
 
-    vehicle_count = fake.random_int(5, 15)
-
-    for _ in range(vehicle_count):
-        new_vehicles.append(
-            Vehicle(
-                id=uuid4(),
-                name=fake.user_name(),
-            )
-        )
-
-    return new_vehicles
+def get_vehicle_by_id(vehicle_id):
+    repository = VehicleRepository.initialize()
+    return repository.get_vehicle_by_id(vehicle_id)

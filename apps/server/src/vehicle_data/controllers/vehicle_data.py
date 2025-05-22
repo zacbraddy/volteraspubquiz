@@ -3,7 +3,9 @@ from fastapi import APIRouter
 from vehicle_data.domain.vehicle import Vehicle
 from vehicle_data.domain.vehicle_data import VehicleData
 from vehicle_data.services.vehicle import get_vehicles
-from vehicle_data.services.vehicle_data import get_vehicle_data
+from vehicle_data.services.vehicle_data import (
+    get_vehicle_data,
+)
 
 vehicle_data_controller = APIRouter()
 

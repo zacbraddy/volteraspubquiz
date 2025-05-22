@@ -13,7 +13,13 @@ tasks:
   dev:
     cmds:
       - poetry env use python3.11
-      - PYTHONPATH=$PYTHONPATH:$(pwd)/src poetry run fastapi dev src/main.py
+      - docker-compose up -d --remove-orphans
+      - echo "Starting PostgreSQL container..."
+      - sleep 2
+      - >
+        trap 'echo "Stopping PostgreSQL container..."; docker-compose down --remove-orphans' EXIT;
+        PYTHONPATH=$PYTHONPATH:$(pwd)/src
+        poetry run fastapi dev src/main.py
 
   lint:
     cmds:

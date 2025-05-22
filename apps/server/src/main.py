@@ -4,9 +4,12 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from init_db import init_db
 from vehicle_data.controllers.vehicle_data import vehicle_data_controller
 
 load_dotenv()
+
+init_db()
 
 app = FastAPI(root_path="/api/v1")
 

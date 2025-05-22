@@ -1,31 +1,23 @@
-import random
+from uuid import UUID
 
-from faker import Faker
-
-from vehicle_data.domain.vehicle_data import VehicleData
-from vehicle_data.services.fake_date_helper import faker_pendulum_datetime
+from vehicle_data.repositories.vehicle_repository import VehicleRepository
+from vehicle_data.services.vehicle import get_vehicles
 
 
 def get_vehicle_data():
-    fake = Faker()
+    repository = VehicleRepository.initialize()
 
-    new_vehicle_data = []
+    vehicles = get_vehicles()
 
-    vehicle_data_count = fake.random_int(5, 500)
+    all_vehicle_data = []
+    for vehicle in vehicles:
+        vehicle_data = repository.get_vehicle_data(vehicle.id)
+        all_vehicle_data.extend(vehicle_data)
 
-    for _ in range(vehicle_data_count):
-        shift_state = random.choice([None, "D", "P", "R", "N"])
-        speed = None if shift_state is None else fake.random_int(0, 120)
+    return all_vehicle_data
 
-        new_vehicle_data.append(
-            VehicleData(
-                timestamp=faker_pendulum_datetime(fake),
-                speed=speed,
-                odometer=fake.pyfloat(min_value=0, max_value=100000, right_digits=1),
-                soc=fake.random_int(0, 100),
-                elevation=fake.random_int(0, 1000),
-                shift_state=shift_state,
-            )
-        )
 
-    return new_vehicle_data
+def get_vehicle_data_by_vehicle_id(vehicle_id: UUID):
+    repository = VehicleRepository.initialize()
+
+    return repository.get_vehicle_data(vehicle_id)
