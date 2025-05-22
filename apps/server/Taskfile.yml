@@ -15,7 +15,30 @@ tasks:
       - poetry env use python3.11
       - docker-compose up -d --remove-orphans
       - echo "Starting PostgreSQL container..."
-      - sleep 2
+      - |
+        echo "Waiting for PostgreSQL to be ready..."
+        max_attempts=30
+        attempt=0
+        while [ $attempt -lt $max_attempts ]; do
+          container_id=$(docker-compose ps -q postgres)
+          if [ -z "$container_id" ]; then
+            echo "PostgreSQL container not found!"
+            docker-compose down --remove-orphans
+            exit 1
+          fi
+          if docker exec $container_id pg_isready -U postgres -h localhost; then
+            echo "PostgreSQL is ready!"
+            break
+          fi
+          attempt=$((attempt+1))
+          echo "Waiting for PostgreSQL to be ready... Attempt $attempt/$max_attempts"
+          sleep 1
+        done
+        if [ $attempt -eq $max_attempts ]; then
+          echo "PostgreSQL did not become ready in time. Exiting."
+          docker-compose down --remove-orphans
+          exit 1
+        fi
       - >
         trap 'echo "Stopping PostgreSQL container..."; docker-compose down --remove-orphans' EXIT;
         PYTHONPATH=$PYTHONPATH:$(pwd)/src

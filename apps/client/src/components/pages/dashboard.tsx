@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DateTime } from "luxon";
 import type { Vehicle } from "types/vehicle.model.ts";
 import type { VehicleData } from "types/vehicle-data.model.ts";
+import type { VehicleDataFilter } from "types/vehicle-data-table-filter.model.ts";
 
 import { VehicleDataTableFilter } from "~/components/organisms/vehicle-data-table-filter.tsx";
 import { ApplicationTemplate } from "~/components/templates/application-template.tsx";
@@ -16,6 +17,12 @@ const Dashboard = () => {
   const queryClient = useQueryClient();
 
   const [firstLoadComplete, setFirstLoadComplete] = useState(false);
+  const [currentFilter, setCurrentFilter] = useState<VehicleDataFilter>({});
+
+  const vehicleDataRequest = useCallback(
+    () => dataProvider.getVehicleData.bind(dataProvider)(currentFilter),
+    [dataProvider, currentFilter],
+  );
 
   const { data: vehicleData, isLoading: vehicleDataLoading } = useQuery<
     VehicleData[],
@@ -23,7 +30,7 @@ const Dashboard = () => {
     VehicleData[]
   >({
     queryKey: ["vehicle_data"],
-    queryFn: dataProvider.getVehicleData.bind(dataProvider),
+    queryFn: vehicleDataRequest,
   });
 
   const { data: vehicles, isLoading: vehiclesLoading } = useQuery<
@@ -46,8 +53,12 @@ const Dashboard = () => {
     }
   }, [vehicleDataLoading, firstLoadComplete]);
 
-  const onFilter = async () => {
-    await queryClient.invalidateQueries({ queryKey: ["vehicle_data"] });
+  useEffect(() => {
+    void queryClient.invalidateQueries({ queryKey: ["vehicle_data"] });
+  }, [vehicleDataRequest]);
+
+  const onFilter = async (newFilter: VehicleDataFilter) => {
+    setCurrentFilter(newFilter);
   };
 
   return (

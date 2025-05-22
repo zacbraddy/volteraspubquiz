@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from fastapi import APIRouter
 
 from vehicle_data.domain.vehicle import Vehicle
@@ -11,8 +13,8 @@ vehicle_data_controller = APIRouter()
 
 
 @vehicle_data_controller.get("/", response_model=list[VehicleData])
-def get_vehicle_data_route():
-    return get_vehicle_data()
+def get_vehicle_data_route(vehicle_id: UUID | None = None):
+    return get_vehicle_data(vehicle_id)
 
 
 @vehicle_data_controller.get("/vehicles/", response_model=list[Vehicle])

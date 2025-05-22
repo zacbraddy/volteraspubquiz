@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { VehicleData } from "types/vehicle-data.model.ts";
+import type { VehicleDataFilter } from "types/vehicle-data-table-filter.model.ts";
 
 import type { Vehicle } from "~/types/vehicle.model";
 
@@ -26,11 +27,14 @@ class DataProvider {
     return [] as unknown as T;
   }
 
-  async getVehicleData(): Promise<VehicleData[]> {
+  async getVehicleData(filter: VehicleDataFilter): Promise<VehicleData[]> {
     return this._wrapApiCall<VehicleData[]>(async () => {
-      const result = await axios.get(`/vehicle_data/`, {
-        baseURL: `${this.serverPath}/api/v${this.apiVersion}`,
-      });
+      const result = await axios.get(
+        `/vehicle_data/${Object.keys(filter).length > 0 ? "?" : ""}${filter.vehicleId ? `vehicle_id=${filter.vehicleId}` : ""}`,
+        {
+          baseURL: `${this.serverPath}/api/v${this.apiVersion}`,
+        },
+      );
 
       return result.data;
     });
