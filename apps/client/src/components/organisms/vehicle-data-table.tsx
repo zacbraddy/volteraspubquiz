@@ -2,15 +2,18 @@ import { useMemo } from "react";
 import { createColumnHelper } from "@tanstack/react-table";
 import type { VehicleData } from "types/vehicle-data.model.ts";
 
+import { Spinner } from "~/components/atoms/spinner.tsx";
+
 import { DataTable } from "../molecules/data-table.tsx";
 
 interface VehicleDataProps {
   data: VehicleData[];
+  isLoading: boolean;
   [key: string]: any;
 }
 
 const VehicleDataTable = (props: VehicleDataProps) => {
-  const { data, ...rest } = props;
+  const { data, isLoading, ...rest } = props;
 
   const columnHelper = createColumnHelper<VehicleData>();
 
@@ -33,6 +36,20 @@ const VehicleDataTable = (props: VehicleDataProps) => {
     ],
     [],
   );
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Spinner />
+      </div>
+    );
+  }
 
   return <DataTable<VehicleData> data={data} columns={columns} {...rest} />;
 };

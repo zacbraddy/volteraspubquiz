@@ -55,5 +55,13 @@ const vehicleData: VehicleData[] = [
 export const Default = {
   args: {
     data: vehicleData,
+    isLoading: false,
+  },
+};
+
+export const Loading = {
+  args: {
+    data: [],
+    isLoading: true,
   },
 };
