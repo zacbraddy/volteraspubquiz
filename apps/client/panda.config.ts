@@ -1,6 +1,6 @@
 import { defineConfig } from "@pandacss/dev";
 
-import { recipes, tokens } from "./src/theme";
+import { keyframes, recipes, textStyles, tokens } from "./src/theme";
 
 export default defineConfig({
   preflight: true,
@@ -16,6 +16,8 @@ export default defineConfig({
     extend: {
       recipes,
       tokens,
+      textStyles,
+      keyframes,
     },
   },
   jsxFramework: "react",

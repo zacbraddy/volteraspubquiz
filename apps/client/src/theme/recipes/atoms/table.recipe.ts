@@ -22,6 +22,12 @@ export const tableRecipe = defineSlotRecipe({
       verticalAlign: "middle",
       backgroundColor: "{colors.neutral.secondary.400}",
       padding: "1rem 0.5rem",
+      "&:first-of-type": {
+        borderTopLeftRadius: "5px",
+      },
+      "&:last-of-type": {
+        borderTopRightRadius: "5px",
+      },
     },
     row: {
       borderBottomWidth: "1px",
