@@ -61,10 +61,27 @@ tasks:
   test:
     deps:
       - test-server
+      - test-client
     method: none
 
   test-server:
     cmds:
       - task: server:test
     internal: true
+    method: none
+
+  test-client:
+    cmds:
+      - task: client:test
+    internal: true
+    method: none
+
+  storybook:
+    cmds:
+      - task: client:storybook
+    method: none
+
+  build-storybook:
+    cmds:
+      - task: client:build-storybook
     method: none

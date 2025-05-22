@@ -21,7 +21,7 @@ const compat = new FlatCompat();
 
 export default tseslint.config(
   {
-    ignores: ["**/eslint.config.js"],
+    ignores: ["**/eslint.config.js", "./src/components/atoms/styled-system/**/*.*", "./src/components/atoms/styled/**/*.*"],
   },
   {
     files: ["**/*{.ts,.tsx}"],

@@ -12,3 +12,15 @@ tasks:
   lint:
     cmds:
       - pnpm lint --fix
+
+  test:
+    cmds:
+      - pnpm test
+
+  storybook:
+    cmds:
+      - pnpm storybook
+
+  build-storybook:
+    cmds:
+      - pnpm build-storybook

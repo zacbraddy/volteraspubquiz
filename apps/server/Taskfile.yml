@@ -12,14 +12,17 @@ tasks:
 
   dev:
     cmds:
-      - PYTHONPATH=$PYTHONPATH:$(pwd)/src fastapi dev src/main.py
+      - poetry env use python3.11
+      - PYTHONPATH=$PYTHONPATH:$(pwd)/src poetry run fastapi dev src/main.py
 
   lint:
     cmds:
-      - isort ./**/*.py
-      - black ./**/*.py
-      - flake8 ./**/*.py
+      - poetry env use python3.11
+      - poetry run isort ./**/*.py
+      - poetry run black ./**/*.py
+      - poetry run flake8 ./**/*.py
 
   test:
     cmds:
-      - PYTHONPATH=$PYTHONPATH:$(pwd)/src pytest tests/ -v
+      - poetry env use python3.11
+      - PYTHONPATH=$PYTHONPATH:$(pwd)/src poetry run pytest tests/ -v

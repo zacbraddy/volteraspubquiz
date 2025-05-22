@@ -1,22 +1,26 @@
 import AutoImport from "unplugin-auto-import/vite";
 import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
+import tsconfigPaths from "vite-tsconfig-paths";
+import react from "@vitejs/plugin-react";
 
-const config = defineConfig({
+export default defineConfig({
   test: {
     globals: true,
     root: "./",
-    include: ["./src/**/*.test.ts"],
+    include: ["./src/**/*.test.ts", "./src/**/*.test.tsx"],
+    environment: 'jsdom',
   },
   plugins: [
-    swc.vite({
-      module: { type: "es6" },
-    }),
+    react(),
     AutoImport({
-      imports: ["vitest", "react"],
+      imports: ["react", "react-router-dom", "vitest"],
+      dirsScanOptions: {
+        types: true,
+      },
       dts: true,
+      viteOptimizeDeps: true,
     }),
+    tsconfigPaths()
   ],
 });
-
-export default config;
