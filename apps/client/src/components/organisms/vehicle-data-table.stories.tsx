@@ -1,7 +1,9 @@
+import { useState } from "react";
 import type { Meta } from "@storybook/react";
 import type { VehicleData } from "types/vehicle-data.model";
+import type { VehicleDataFilter } from "types/vehicle-data-table-filter.model";
 
-import { VehicleDataTable } from "./vehicle-data-table.tsx";
+import { VehicleDataTable } from "./vehicle-data-table";
 
 const meta = {
   title: "Organisms/VehicleDataTable",
@@ -52,6 +54,19 @@ const vehicleData: VehicleData[] = [
   },
 ];
 
+const generateLargeDataset = (count: number): VehicleData[] => {
+  const result: VehicleData[] = [];
+  for (let i = 0; i < count; i++) {
+    const baseData = vehicleData[i % vehicleData.length];
+    result.push({
+      ...baseData,
+      timestamp: `2023-05-${String(Math.floor(i / 5) + 1).padStart(2, "0")}T${String(8 + (i % 12)).padStart(2, "0")}:30:00Z`,
+      odometer: (baseData.odometer || 12_500) + i * 10,
+    });
+  }
+  return result;
+};
+
 export const Default = {
   args: {
     data: vehicleData,
@@ -63,5 +78,36 @@ export const Loading = {
   args: {
     data: [],
     isLoading: true,
+  },
+};
+
+export const WithPagination = {
+  render: () => {
+    const [filter, setFilter] = useState<VehicleDataFilter>({
+      pageSize: 5,
+      page: 1,
+    });
+
+    const largeDataset = generateLargeDataset(25);
+    const totalItems = largeDataset.length;
+
+    const currentPageData = largeDataset.slice(
+      filter.page ?? 1,
+      (filter.page ?? 1) + (filter.pageSize ?? 5),
+    );
+
+    const handleFilter = async (newFilter: VehicleDataFilter) => {
+      setFilter(newFilter);
+    };
+
+    return (
+      <VehicleDataTable
+        data={currentPageData}
+        isLoading={false}
+        totalItems={totalItems}
+        currentFilter={filter}
+        onFilter={handleFilter}
+      />
+    );
   },
 };

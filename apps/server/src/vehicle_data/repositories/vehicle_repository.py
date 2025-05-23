@@ -30,22 +30,40 @@ class VehicleRepository:
         ]
 
     def get_vehicle_by_id(self, vehicle_id: UUID) -> Vehicle:
-        vehicle_model = self.db.query(VehicleModel).filter(VehicleModel.id == str(vehicle_id)).first()
+        vehicle_model = (
+            self.db.query(VehicleModel)
+            .filter(VehicleModel.id == str(vehicle_id))
+            .first()
+        )
         if vehicle_model is None:
             return None
         return Vehicle(
             id=getattr(vehicle_model, "id"), name=getattr(vehicle_model, "name")
         )
 
-    def get_vehicle_data(self, vehicle_id: UUID) -> List[VehicleData]:
-        data_models = (
-            self.db.query(VehicleDataModel)
-            .filter(VehicleDataModel.vehicle_id == str(vehicle_id))
-            .order_by(VehicleDataModel.timestamp)
-            .all()
-        )
+    def get_vehicle_data(
+        self,
+        vehicle_id: UUID = None,
+        page_size: int = None,
+        page: int = None,
+    ) -> tuple[List[VehicleData], int]:
+        query = self.db.query(VehicleDataModel)
 
-        return [
+        if vehicle_id is not None:
+            query = query.filter(VehicleDataModel.vehicle_id == str(vehicle_id))
+
+        total_count = query.count()
+
+        query = query.order_by(VehicleDataModel.timestamp)
+
+        if page_size is not None:
+            query = query.limit(page_size)
+        if page is not None:
+            query = query.offset(page * page_size)
+
+        data_models = query.all()
+
+        vehicle_data = [
             VehicleData(
                 timestamp=pendulum.instance(getattr(data_model, "timestamp")),
                 speed=getattr(data_model, "speed"),
@@ -56,6 +74,8 @@ class VehicleRepository:
             )
             for data_model in data_models
         ]
+
+        return vehicle_data, total_count
 
     def create_vehicle(self, vehicle: Vehicle) -> Vehicle:
         vehicle_model = VehicleModel(id=str(vehicle.id), name=vehicle.name)

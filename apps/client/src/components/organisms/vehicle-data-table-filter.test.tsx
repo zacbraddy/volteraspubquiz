@@ -1,13 +1,11 @@
-import { useState } from "react";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { DateTime } from "luxon";
-import type { VehicleDataFilter } from "types/vehicle-data-table-filter.model.ts";
+import { vi } from "vitest";
 
 import "@testing-library/jest-dom";
 
 import { VehicleDataTableFilter } from "./vehicle-data-table-filter";
 
-// Sample data for tests
 const sampleVehicleIds = [
   "3d122bf6-9058-4ee7-bfb1-4ad9e84a6373",
   "436bdd0d-fc78-430f-bef4-5370ad57e512",
@@ -28,11 +26,9 @@ describe("VehicleDataTableFilter", () => {
       />,
     );
 
-    // Check if the select component is rendered
     const selectElement = screen.getByRole("combobox");
     expect(selectElement).toBeInTheDocument();
 
-    // Check if the filter button is rendered
     const filterButton = screen.getByRole("button", { name: /filter/i });
     expect(filterButton).toBeInTheDocument();
   });
@@ -45,44 +41,27 @@ describe("VehicleDataTableFilter", () => {
       />,
     );
 
-    const selectElement = screen.getByRole("combobox");
-    expect(selectElement).toHaveAttribute("placeholder", "vehicle_id");
+    const placeholderElement = screen.getByText("vehicle_id");
+    expect(placeholderElement).toBeInTheDocument();
   });
 
   it("calls onFilter with the selected vehicle ID when filter button is clicked", () => {
     const mockOnFilter = vi.fn();
+    const initialFilter = { vehicleId: sampleVehicleIds[0] };
 
-    const TestWrapper = () => {
-      const [_, setFilter] = useState({});
-
-      const handleFilter = async (newFilter: VehicleDataFilter) => {
-        setFilter(newFilter);
-        mockOnFilter(newFilter);
-      };
-
-      return (
-        <VehicleDataTableFilter
-          vehicleIds={sampleVehicleIds}
-          dateRange={sampleDateRange}
-          onFilter={handleFilter}
-        />
-      );
-    };
-
-    render(<TestWrapper />);
-
-    const selectElement = screen.getByRole("combobox");
-    fireEvent.click(selectElement);
-
-    const option = screen.getByText(sampleVehicleIds[0]);
-    fireEvent.click(option);
+    render(
+      <VehicleDataTableFilter
+        vehicleIds={sampleVehicleIds}
+        dateRange={sampleDateRange}
+        currentFilter={initialFilter}
+        onFilter={mockOnFilter}
+      />,
+    );
 
     const filterButton = screen.getByRole("button", { name: /filter/i });
     fireEvent.click(filterButton);
 
-    expect(mockOnFilter).toHaveBeenCalledWith({
-      vehicleId: sampleVehicleIds[0],
-    });
+    expect(mockOnFilter).toHaveBeenCalledWith(initialFilter);
   });
 
   it("handles empty vehicle IDs gracefully", () => {

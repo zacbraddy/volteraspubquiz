@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { DateTime } from "luxon";
+import { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } from "types/constants.ts";
+import type { PaginatedResponse } from "types/paginated-response.model.ts";
 import type { Vehicle } from "types/vehicle.model.ts";
 import type { VehicleData } from "types/vehicle-data.model.ts";
 import type { VehicleDataFilter } from "types/vehicle-data-table-filter.model.ts";
@@ -14,24 +16,28 @@ import { VehicleDataTable } from "../organisms/vehicle-data-table.tsx";
 
 const Dashboard = () => {
   const dataProvider = useMemo(() => new DataProvider(), []);
-  const queryClient = useQueryClient();
 
   const [firstLoadComplete, setFirstLoadComplete] = useState(false);
-  const [currentFilter, setCurrentFilter] = useState<VehicleDataFilter>({});
+  const [currentFilter, setCurrentFilter] = useState<VehicleDataFilter>({
+    pageSize: DEFAULT_PAGE_SIZE,
+    page: DEFAULT_PAGE,
+  });
 
   const vehicleDataRequest = useCallback(
     () => dataProvider.getVehicleData.bind(dataProvider)(currentFilter),
     [dataProvider, currentFilter],
   );
 
-  const { data: vehicleData, isLoading: vehicleDataLoading } = useQuery<
-    VehicleData[],
+  const { data: vehicleDataResponse, isLoading: vehicleDataLoading } = useQuery<
+    PaginatedResponse<VehicleData>,
     Error,
-    VehicleData[]
+    PaginatedResponse<VehicleData>
   >({
-    queryKey: ["vehicle_data"],
+    queryKey: ["vehicle_data", currentFilter],
     queryFn: vehicleDataRequest,
   });
+
+  const vehicleData = vehicleDataResponse?.items ?? [];
 
   const { data: vehicles, isLoading: vehiclesLoading } = useQuery<
     Vehicle[],
@@ -53,12 +59,14 @@ const Dashboard = () => {
     }
   }, [vehicleDataLoading, firstLoadComplete]);
 
-  useEffect(() => {
-    void queryClient.invalidateQueries({ queryKey: ["vehicle_data"] });
-  }, [vehicleDataRequest]);
-
   const onFilter = async (newFilter: VehicleDataFilter) => {
-    setCurrentFilter(newFilter);
+    const updatedFilter = {
+      ...newFilter,
+      pageSize:
+        newFilter.pageSize ?? currentFilter.pageSize ?? DEFAULT_PAGE_SIZE,
+      page: newFilter.page ?? currentFilter.page ?? DEFAULT_PAGE,
+    };
+    setCurrentFilter(updatedFilter);
   };
 
   return (
@@ -70,12 +78,16 @@ const Dashboard = () => {
           vehicleIds={vehicleIds}
           dateRange={{ start: DateTime.now(), end: DateTime.now() }}
           onFilter={onFilter}
+          currentFilter={currentFilter}
         />
       }
       table={
         <VehicleDataTable
-          data={vehicleData ?? []}
+          data={vehicleData}
           isLoading={vehicleDataLoading}
+          totalItems={vehicleDataResponse?.total ?? 0}
+          currentFilter={currentFilter}
+          onFilter={onFilter}
         />
       }
     />

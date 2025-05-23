@@ -24,7 +24,7 @@ def init_db():
         vehicles.append(vehicle)
 
     for vehicle in vehicles:
-        for _ in range(random.randint(10, 30)):
+        for _ in range(random.randint(10, 300)):
             shift_state = random.choice([None, "D", "P", "R", "N"])
             speed = None if shift_state is None else fake.random_int(0, 120)
 

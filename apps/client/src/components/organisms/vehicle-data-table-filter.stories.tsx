@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, within } from "@storybook/test";
 import { DateTime } from "luxon";
 
-import { VehicleDataTableFilter } from "./vehicle-data-table-filter.tsx";
+import { VehicleDataTableFilter } from "./vehicle-data-table-filter";
 
 const vehicleIds: string[] = [
   "3d122bf6-9058-4ee7-bfb1-4ad9e84a6373",
@@ -56,25 +56,21 @@ export const WithActions: Story = {
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    // Open the select dropdown
     await step("Open vehicle ID dropdown", async () => {
       const selectTrigger = canvas.getByRole("combobox");
       await userEvent.click(selectTrigger);
     });
 
-    // Select the first vehicle ID
     await step("Select a vehicle ID", async () => {
       const option = canvas.getByText(vehicleIds[0]);
       await userEvent.click(option);
     });
 
-    // Click the filter button
     await step("Apply the filter", async () => {
       const filterButton = canvas.getByRole("button", { name: /filter/i });
       await userEvent.click(filterButton);
     });
 
-    // Verify the onFilter callback was called with the correct arguments
     await step("Verify filter was applied", async () => {
       await expect(args.onFilter).toHaveBeenCalledWith({
         vehicleId: vehicleIds[0],

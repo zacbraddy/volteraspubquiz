@@ -11,6 +11,7 @@ interface VehicleDataTableFilterProps {
     start: DateTime;
     end: DateTime;
   };
+  currentFilter?: VehicleDataFilter;
   onFilter?: (newFilter: VehicleDataFilter) => Promise<void>;
   [key: string]: any;
 }
@@ -19,13 +20,15 @@ const VehicleDataTableFilter = (props: VehicleDataTableFilterProps) => {
   const {
     vehicleIds,
     dateRange,
+    currentFilter: externalFilter = {},
     onFilter = () => {
       /* noop */
     },
     ...rest
   } = props;
 
-  const [currentFilter, setCurrentFilter] = useState<VehicleDataFilter>({});
+  const [currentFilter, setCurrentFilter] =
+    useState<VehicleDataFilter>(externalFilter);
 
   const vehicleIdOptions =
     vehicleIds?.map((id) => ({
@@ -44,7 +47,9 @@ const VehicleDataTableFilter = (props: VehicleDataTableFilterProps) => {
   };
 
   const handleOnFilterSubmit = async () => {
-    await onFilter(currentFilter);
+    if (onFilter) {
+      await onFilter(currentFilter);
+    }
   };
 
   return (

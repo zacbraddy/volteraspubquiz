@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { PaginatedResponse } from "types/paginated-response.model.ts";
 import type { VehicleData } from "types/vehicle-data.model.ts";
 import type { VehicleDataFilter } from "types/vehicle-data-table-filter.model.ts";
 
@@ -23,14 +24,28 @@ class DataProvider {
       );
     }
 
-    // Cast empty array to T to ensure type compatibility
     return [] as unknown as T;
   }
 
-  async getVehicleData(filter: VehicleDataFilter): Promise<VehicleData[]> {
-    return this._wrapApiCall<VehicleData[]>(async () => {
+  async getVehicleData(
+    filter: VehicleDataFilter,
+  ): Promise<PaginatedResponse<VehicleData>> {
+    return this._wrapApiCall<PaginatedResponse<VehicleData>>(async () => {
+      const params = new URLSearchParams();
+      if (filter.vehicleId) {
+        params.append("vehicle_id", filter.vehicleId);
+      }
+      if (filter.pageSize !== undefined) {
+        params.append("page_size", filter.pageSize.toString());
+      }
+      if (filter.page !== undefined) {
+        params.append("page", filter.page.toString());
+      }
+
+      const queryString = params.toString();
+
       const result = await axios.get(
-        `/vehicle_data/${Object.keys(filter).length > 0 ? "?" : ""}${filter.vehicleId ? `vehicle_id=${filter.vehicleId}` : ""}`,
+        `/vehicle_data/${queryString ? `?${queryString}` : ""}`,
         {
           baseURL: `${this.serverPath}/api/v${this.apiVersion}`,
         },

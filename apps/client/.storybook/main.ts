@@ -32,6 +32,10 @@ const config: StorybookConfig = {
             path.dirname(new URL(import.meta.url).pathname),
             "../src/components/atoms/styled-system",
           ),
+          "types": path.resolve(
+            path.dirname(new URL(import.meta.url).pathname),
+            "../src/types",
+          ),
         },
       },
     });
