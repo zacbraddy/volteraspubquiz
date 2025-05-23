@@ -1,7 +1,7 @@
 # Architecture Decision Record (ADR) Creation
 
 ## Purpose
-This custom prompt helps document architectural decisions for Flocast using the team's established ADR format. It supports both standalone ADR creation and integration with feature discussions.
+This custom prompt helps document architectural decisions for Volteras Pub Quiz using the team's established ADR format. It supports both standalone ADR creation and integration with feature discussions.
 
 ## ADR Template Structure
 
@@ -74,7 +74,7 @@ To maximize token efficiency while creating high-quality ADRs:
     - Use brief acknowledgments rather than extensive summaries
 
 5. **Contextual Knowledge Leveraging**:
-    - Reference existing Flocast architectural patterns when relevant
+    - Reference existing Volteras Pub Quiz architectural patterns when relevant
     - Connect decisions to known technical stack elements
     - Identify when a decision might affect existing patterns or assumptions
 
@@ -83,7 +83,7 @@ To maximize token efficiency while creating high-quality ADRs:
 Throughout the ADR creation process:
 
 1. **Context Gap Identification**:
-    - Actively identify where system prompt context about Flocast is missing
+    - Actively identify where system prompt context about Volteras Pub Quiz is missing
     - Note when architectural assumptions seem outdated or incomplete
     - Flag technology stack information that appears to be missing
 
